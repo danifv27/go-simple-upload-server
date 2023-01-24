@@ -1,0 +1,41 @@
+# build stage
+FROM golang:1.19.5-alpine3.17 AS build-env
+
+RUN apk update && apk add --no-cache git make bash
+
+ADD . /src
+RUN cd /src && go mod download && make build-linux-amd64
+
+# final stage
+FROM alpine:3.17
+
+USER root
+
+ENV USER_ID=65535
+ENV GROUP_ID=65535
+ENV USER_NAME=foo
+ENV GROUP_NAME=bar
+
+RUN addgroup -g $GROUP_ID $GROUP_NAME && \
+    adduser --shell /sbin/nologin --disabled-password \
+    --no-create-home --uid $USER_ID --ingroup $GROUP_NAME $USER_NAME
+
+
+RUN mkdir -p /app/bin; mkdir -p /app/config
+# Fix supervisord "Cannot open an HTTP server: socket.error reported errno.EACCES" error
+RUN chmod 777 /run
+
+COPY --from=build-env /src/output/linux/amd64/bin/uploadServer /app/bin/uploadServer
+
+RUN chown $USER_NAME:$GROUP_NAME -R /app
+
+WORKDIR /app
+
+# Use an unprivileged user.
+USER $USER_NAME
+
+# executable
+ENTRYPOINT [ "/app/bin/uploadServer" ]
+# arguments that can be overridden
+CMD ["--version"]
+
