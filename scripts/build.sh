@@ -42,7 +42,7 @@ BUILD_DATE=$(date '+%Y-%m-%d-%H:%M:%S')
 # To optimize the build for alpine linux
 # LDFLAGS="${LDFLAGS} -w -linkmode external -extldflags \"-static\""
 
-VERSION_ROOT=../../internal/infrastructure/storage/embed
+VERSION_ROOT=.
 VERSION_FILE=version.json
 VERSION_JSON=${VERSION_ROOT}/${VERSION_FILE}
 mkdir -p ${VERSION_ROOT}

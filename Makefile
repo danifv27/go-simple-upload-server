@@ -5,7 +5,7 @@ IMAGE_NAME = $(DOCKER_REGISTRY)/danifv27/$(BIN)
 VCS_USER ?= cmo-sre
 VCS_PASSWORD = $(shell echo $(BASE64_PASSWORD) | base64 --decode)
 VCS_PROTOCOL ?= https
-VCS_URL ?= tools.adidas-group.com/bitbucket/scm/cmodevops/cmo-optimocli.git
+VCS_URL ?= https://github.com/danifv27/go-simple-upload-server.git
 ARTIFACTORY_CREDENTIALS ?= $(shell echo cGMtbWF2ZW46RGVjZW1iZXJAMjAxNg==| base64 --decode)
 
 TOP_LEVEL = .

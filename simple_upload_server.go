@@ -26,7 +26,20 @@ func run(args []string) int {
 	certFile := flag.String("cert", "", "path to certificate file")
 	keyFile := flag.String("key", "", "path to key file")
 	corsEnabled := flag.Bool("cors", false, "if true, add ACAO header to support CORS")
+	version := flag.Bool("version", false, "show version")
 	flag.Parse()
+	if *version {
+		if v, err := NewVersion(); err != nil {
+			logger.WithError(err).Fatal("could not create version object")
+			return 3
+		} else if info, e := v.GetVersionInfo(); e != nil {
+			logger.WithError(err).Fatal("could not retrieve version info")
+			return 3
+		} else {
+			fmt.Println(info)
+		}
+		return 0
+	}
 	serverRoot := flag.Arg(0)
 	if len(serverRoot) == 0 {
 		flag.Usage()
